@@ -73,4 +73,18 @@ void fgemmu( int n, float* A, float* B, float* C ) {
 void faxpyu( int n, float A, float* x, float* y, float* result ) {
     for( int i = 0; i < n; i++ )
         result[i] = A * x[i] + y[i];
-} 
+}
+// Optimized code
+void faxpyo( int n, float A, float* x, float* y, float* result ) {
+    for ( int i = 0; i < n; i+=4){
+        _mm_store_ps(&result[i],
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_set_ps1(A),
+                        _mm_loadu_ps( x + i)
+                        ),
+                   _mm_loadu_ps (y+i)
+                    )
+                );
+}
+}
